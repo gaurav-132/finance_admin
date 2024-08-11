@@ -54,6 +54,12 @@ const login = asyncHandler(async (req, res, next) => {
         if(!user){
             throw new ApiError(404, "User does not exist or invalid credentials");
         }
+        const isMatch = await bcrypt.compare(password, user.password);
+
+
+        if(!isMatch){
+            throw new ApiError(404, "Wrong Password, Please input correct password.");
+        }
 
         if(user.isActive === 0){
             throw new ApiError(401, "You have been blocked by admin.");
@@ -66,6 +72,7 @@ const login = asyncHandler(async (req, res, next) => {
                 201,
                 {
                     token,
+                    user,
                 },
                 "User logged in successfully",
             )

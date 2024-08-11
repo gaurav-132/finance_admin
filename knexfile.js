@@ -1,41 +1,39 @@
-import dbConfig  from './src/config/db.js';
+import dotenv from 'dotenv';
 
+// Load environment variables from .env file
+dotenv.config();
 
-/**
- * @type { Object.<string, import("knex").Knex.Config> }
- */
-export default {
+const knexConfig  = {
   development: {
-    ...dbConfig,
-  },
-  staging: {
-    client: 'postgresql',
+    client: 'mysql2',
     connection: {
-      database: 'my_db',
-      user: 'username',
-      password: 'password'
-    },
-    pool: {
-      min: 2,
-      max: 10
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD || '',
+      database: process.env.DB_DATABASE,
     },
     migrations: {
-      tableName: 'knex_migrations'
-    }
+      directory: './src/data/migrations',
+    },
+    seeds: {
+      directory: './src/data/seeds',
+    },
   },
   production: {
-    client: 'postgresql',
+    client: 'mysql2',
     connection: {
-      database: 'my_db',
-      user: 'username',
-      password: 'password'
-    },
-    pool: {
-      min: 2,
-      max: 10
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
     },
     migrations: {
-      tableName: 'knex_migrations'
-    }
-  }
+      directory: './migrations',
+    },
+    seeds: {
+      directory: './seeds',
+    },
+  },
 };
+
+export default knexConfig;

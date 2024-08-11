@@ -1,5 +1,5 @@
 import { findUserById, findUserByMobile, insertAndGetId } from "../models/user.model.js";
-
+import bycrypt from 'bcryptjs'
 
 const getUser = async (id) => {
     return findUserById(id);
@@ -12,7 +12,6 @@ const findUser = async (mobile) => {
 }
 
 const insertGetId = async (userObj) => {
-
     return await insertAndGetId(userObj);
 };
 
@@ -20,5 +19,5 @@ const insertGetId = async (userObj) => {
 export {
     getUser,
     findUser,
-    insertGetId
+    insertGetId,
 }

@@ -9,7 +9,7 @@ const updateEmpService = async(empId, empObj) => {
 }
 
 const findEmpByIdService = async(empId) => {
-    return findEmployeeById(empId);
+    return await findEmployeeById(empId);
 }
 
 export {
