@@ -72,7 +72,6 @@ const login = asyncHandler(async (req, res, next) => {
                 201,
                 {
                     token,
-                    user,
                 },
                 "User logged in successfully",
             )

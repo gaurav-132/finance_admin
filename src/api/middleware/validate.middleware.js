@@ -2,6 +2,7 @@ const validate = (schema) => async (req, res, next) => {
     try{
         const parseBody = await schema.parseAsync(req.body);
         req.body = parseBody;
+        console.log("Parsed Data:", parseBody);
         next();
     }catch(error){
         if (error.errors && error.errors.length > 0) {

@@ -1,9 +1,9 @@
 import express from 'express';
 import { validate } from '../middleware/validate.middleware.js';
 import { verifyJwt } from '../middleware/auth.middleware.js';
-import { employeeDetailsSchema } from '../validators/employee.validator.js';
+import { employeeDetailsSchema, employeeMonthlySalarySchema } from '../validators/employee.validator.js';
 import { upload } from '../middleware/multer.middleware.js';
-import { updateEmp } from '../controllers/employee.controller.js';
+import { updateEmp, updateMonthlySalary } from '../controllers/employee.controller.js';
 
 
 const router = express.Router();
@@ -28,5 +28,7 @@ router.route('/update-details').post(verifyJwt,
     validate(employeeDetailsSchema), 
     updateEmp
 );
+
+router.route('/update-monthly-salary').post(verifyJwt, validate(employeeMonthlySalarySchema),updateMonthlySalary);
 
 export { router as employeeRoutes};

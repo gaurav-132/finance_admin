@@ -1,4 +1,4 @@
-import { findEmpByIdService, updateEmpService } from "../../repositories/employee.repository.js";
+import { findEmpByIdService, updateEmpSalaryService, updateEmpService } from "../../repositories/employee.repository.js";
 import { ApiError } from "../../utils/apiError.js";
 import { ApiResponse } from "../../utils/apiResponse.js";
 import { asyncHandler } from "../../utils/asyncHandler.js";
@@ -32,7 +32,31 @@ const updateEmp = asyncHandler(async(req, res, next) => {
     }
 });
 
+const updateMonthlySalary = asyncHandler(async(req, res, next) => {
+    try {
+        const {id, empId, month, year, paid, paidAmount, advanceAmountTaken, totalMonthlyExpense } = req.body;
+
+        const checkEmpExist = await findEmpByIdService(empId);
+
+        if(!checkEmpExist){
+            throw new ApiError(401, "Invalid request employee does not exist");
+        }
+
+        await updateEmpSalaryService({id, empId, month, year, paid, paidAmount, advanceAmountTaken, totalMonthlyExpense });
+
+        return res.status(200).json(
+            new ApiResponse(
+                200,
+                "Employee salary updated successfully!"
+            )
+        )
+
+    } catch (error) {
+        next(error);
+    }
+});
 
 export {
     updateEmp,
+    updateMonthlySalary
 }
