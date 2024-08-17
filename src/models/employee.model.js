@@ -20,9 +20,47 @@ const updateEmployeeSalary = async(empSalaryObj) => {
     }
 }
 
+const applyFilters = (query, filterObj) => {
+    if (filterObj.allocatedLocationId) {
+        query.where('allocatedLocationId', filterObj.allocatedLocationId);
+    }
+    
+    if (filterObj.employeeName) {
+        query.where('name', 'like', `%${filterObj.employeeName}%`);
+    }
+};
+
+const getEmployeesData = async (filterObj) => {
+
+    const totalQuery = knex('employees').count('id as count');
+    applyFilters(totalQuery, filterObj);
+    const totalResult = await totalQuery.first();
+    const total = totalResult.count; 
+
+    
+    let employeesQuery = knex('employees').select('*');
+    applyFilters(employeesQuery, filterObj);
+
+    if (filterObj.limit) {
+        employeesQuery.limit(filterObj.limit);
+    }
+
+    if (filterObj.page && filterObj.limit) {
+        const offset = (filterObj.page - 1) * filterObj.limit;
+        employeesQuery.offset(offset);
+    }
+
+    const employees = await employeesQuery;
+
+    return { employees, total };
+};
+
+
+
 export {
     addEmployee,
     updateEmployee,
     findEmployeeById,
     updateEmployeeSalary,
+    getEmployeesData,
 }

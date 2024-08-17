@@ -19,11 +19,11 @@ const employeeDetailsSchema = z.object({
         message: "Pan number must be exactly 10 characters and follow the format: XXXXX1234X."
     }),
 
-    allocatedLocationId: z.number({
+    allocatedLocationId: z.string({
         required_error: "Location allocation is required"
     }),
 
-    empId: z.number({
+    empId: z.string({
         required_error: "Employee id is required"
     })
 });
