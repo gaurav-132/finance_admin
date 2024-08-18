@@ -46,7 +46,7 @@ const createCustomer = asyncHandler(async (req, res, next) => {
 
 const loanReq = asyncHandler(async(req, res) => {
     const { customerId, loanAmount,check } = req.body;
-    await loanReqService();
+    // await loanReqService();
 })
 
 export { createCustomer, loanReq };

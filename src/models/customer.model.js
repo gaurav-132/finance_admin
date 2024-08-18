@@ -4,4 +4,9 @@ const addCustomerDB = async (customerObj) => {
   await knex("customers").insert(customerObj);
 };
 
-export { addCustomerDB };
+const getCustomersDB = async (FilterObj) => {
+  const customers = await knex("customers");
+  return customers;
+};
+
+export { addCustomerDB, getCustomersDB };
