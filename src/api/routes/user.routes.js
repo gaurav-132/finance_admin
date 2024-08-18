@@ -9,4 +9,6 @@ const router = express.Router();
 
 router.route("/add-user").post(verifyJwt, validate(addUserSchema), addUser);
 
+router.route("/get-users").post(verifyJwt, getUsers);
+
 export { router as userRoutes };

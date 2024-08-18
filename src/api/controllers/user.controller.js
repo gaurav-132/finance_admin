@@ -4,6 +4,7 @@ import {
   findUser,
   insertGetId,
   getUser,
+  getUsersService,
 } from "../../repositories/user.repository.js";
 import bcrypt from "bcryptjs";
 import { ApiResponse } from "../../utils/apiResponse.js";
@@ -95,4 +96,28 @@ const login = asyncHandler(async (req, res, next) => {
     );
 });
 
-export { addUser, login };
+const getUsers = asyncHandler(async(req,res) => {
+    let { page, limit, name } = req.body;
+    
+    const offset = (page - 1) * limit;
+
+    const { users, total } = await getUsersService({page, limit, name, offset});
+
+    return res
+        .status(201)
+        .json(
+            new ApiResponse(
+                201,
+                {
+                    users,
+                    page,
+                    limit,
+                    total
+                },
+                "Users fetched successfully"
+            )
+        );
+
+})
+
+export { addUser, login, getUsers };
