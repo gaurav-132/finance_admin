@@ -1,52 +1,71 @@
-import { createCustomerService } from "../../repositories/customer.repository.js";
+import {
+  createCustomerService,
+  getCustomersService,
+} from "../../repositories/customer.repository.js";
 import { asyncHandler } from "../../utils/asyncHandler.js";
 import { ApiResponse } from "../../utils/apiResponse.js";
 
 const createCustomer = asyncHandler(async (req, res, next) => {
+  const {
+    aadhaarNumber,
+    panNumber,
+    chequePhoto,
+    firstName,
+    lastName,
+    mobileNumber,
+    occupation,
+    permanentAddress,
+    currentAddress,
+    workLocation,
+    addedBy,
+  } = req.body;
 
-    const {
-        aadhaarNumber,
-        panNumber,
-        chequePhoto,
-        firstName,
-        lastName,
-        mobileNumber,
-        occupation,
-        permanentAddress,
-        currentAddress,
-        workLocation,
-        addedBy,
-    } = req.body;
+  await createCustomerService({
+    aadhaarNumber,
+    panNumber,
+    chequePhoto,
+    firstName,
+    lastName,
+    mobileNumber,
+    occupation,
+    permanentAddress,
+    currentAddress,
+    workLocation,
+    addedBy,
+  });
 
-    await createCustomerService({
-        aadhaarNumber,
-        panNumber,
-        chequePhoto,
-        firstName,
-        lastName,
-        mobileNumber,
-        occupation,
-        permanentAddress,
-        currentAddress,
-        workLocation,
-        addedBy,
-    });
-
-    return res
-        .status(200)
-        .json(
-            new ApiResponse(
-                200, 
-                "Customer Created Successfully"
-            )
-        );
-
+  return res
+    .status(200)
+    .json(new ApiResponse(200, "Customer Created Successfully"));
 });
 
+const loanReq = asyncHandler(async (req, res) => {
+  const { customerId, loanAmount, check } = req.body;
+  // await loanReqService();
+});
 
-const loanReq = asyncHandler(async(req, res) => {
-    const { customerId, loanAmount,check } = req.body;
-    // await loanReqService();
-})
+const getCustomers = asyncHandler(async (req, res, next) => {
+  try {
+    const { total, limit, page } = req.body;
 
-export { createCustomer, loanReq };
+    const customers = await getCustomersService({
+      total,
+      limit,
+      page,
+    });
+
+    const data = {
+      customers,
+      total: 2,
+      page: 1,
+    };
+
+    return res
+      .status(200)
+      .json(new ApiResponse(200, data, "Customers Fetched Successfully"));
+  } catch (error) {
+    next(error);
+  }
+});
+
+export { createCustomer, loanReq, getCustomers };
