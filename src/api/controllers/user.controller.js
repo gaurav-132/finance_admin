@@ -1,6 +1,6 @@
 import { asyncHandler } from "../../utils/asyncHandler.js";
 import { ApiError } from "../../utils/apiError.js";
-import { findUser, insertGetId, getUser } from "../../repositories/user.repository.js";
+import { findUser, insertGetId, getUser, getUsersService } from "../../repositories/user.repository.js";
 import bcrypt from 'bcryptjs';
 import { ApiResponse } from "../../utils/apiResponse.js";
 import { generateTokenService } from "../../security/auth/auth.service.js";
@@ -25,7 +25,7 @@ const addUser = asyncHandler( async(req,res, next) => {
         throw new ApiError(500, "Internal Server Error");
     }
 
-    // console.log(cre)
+    
     if(createdUser.isAdmin == 0){
         const employee = await createEmployee({userId: createdUser.id, firstName, lastName, mobile, name: firstName+' '+lastName});
     }
@@ -74,6 +74,28 @@ const login = asyncHandler(async (req, res, next) => {
 });
 
 
+const getUsers = asyncHandler(async(req, res, next) => {
+
+    let { page, limit, name } = req.body;
+    
+    const offset = (page - 1) * limit;
+
+    const { users, total } = await getUsersService({ page, limit, offset, name });
 
 
-export { addUser, login };
+    return res.status(200).json(
+        new ApiResponse(
+            200,
+            {
+                users,
+                page,
+                limit,
+                total
+            },
+            "Users fetched successfully!"
+        )
+    );
+});
+
+
+export { addUser, login, getUsers };

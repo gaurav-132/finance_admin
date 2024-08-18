@@ -6,7 +6,6 @@ import { getUser } from "../../repositories/user.repository.js";
 export const verifyJwt = asyncHandler(async (req, res, next) => {
     const token = req.headers.authorization?.replace("Bearer ", "").trim();
 
-
     if (!token) {
         throw new ApiError(401, "Unauthorized Request!");
     }
