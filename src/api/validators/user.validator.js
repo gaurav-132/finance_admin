@@ -20,9 +20,8 @@ const addUserSchema = z.object({
         .min(8, { message: "Password must be at least 8 characters" })
         .max(1024, { message: "Password should not be more than 1024 characters" }),
 
-    isAdmin: z.number({ required_error: "Is admin field is required" }),
+    isAdmin: z.string({ required_error: "Is admin field is required" }),
 
-    isActive: z.number({ required_error: "Is Active field is required" }),
 });
 
 

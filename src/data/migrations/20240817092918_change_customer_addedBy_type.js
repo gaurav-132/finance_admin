@@ -3,9 +3,9 @@
  * @returns { Promise<void> }
  */
 export async function up(knex) {
-  return knex.schema.alterTable("customers", function (table) {
-    table.integer("addedBy").alter();
-  });
+    return knex.schema.alterTable("customers", function (table) {
+        table.integer("addedBy").alter();
+    });
 }
 
 /**
@@ -13,8 +13,7 @@ export async function up(knex) {
  * @returns { Promise<void> }
  */
 export async function down(knex) {
-  return knex.schema.alterTable("customers", function (table) {
-    // Reverse the change by converting the column back to a string
-    table.string("addedBy").alter();
-  });
+    return knex.schema.alterTable("customers", function (table) {
+        table.string("addedBy").alter();
+    });
 }

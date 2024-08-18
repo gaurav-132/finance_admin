@@ -3,9 +3,9 @@
  * @returns { Promise<void> }
  */
 export async function up (knex) {
-  return knex.schema.alterTable("customers", function (table) {
-    table.varchar("chequePhoto", 255).alter();
-  });
+    return knex.schema.alterTable("customers", function (table) {
+        table.varchar("chequePhoto", 255).alter();
+    });
 };
 
 /**
@@ -13,7 +13,7 @@ export async function up (knex) {
  * @returns { Promise<void> }
  */
 export async function down (knex) {
-  return knex.schema.alterTable("customers", function (table) {
-    table.integer("chequePhoto").alter();
-  });
+    return knex.schema.alterTable("customers", function (table) {
+        table.integer("chequePhoto").alter();
+    });
 };

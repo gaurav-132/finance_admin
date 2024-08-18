@@ -11,54 +11,55 @@ import { generateTokenService } from "../../security/auth/auth.service.js";
 import { createEmployee } from "../../repositories/employee.repository.js";
 
 const addUser = asyncHandler(async (req, res, next) => {
-  try {
-    const { firstName, lastName, mobile, password, isAdmin, isActive } =
-      req.body;
+    
+    const { firstName, lastName, mobile, password, isAdmin, isActive } = req.body;
 
     const existedUser = await findUser(mobile);
 
     if (existedUser) {
-      throw new ApiError(409, "User Already Exist");
+        throw new ApiError(409, "User Already Exist");
     }
 
     const encryptPassword = await bcrypt.hash(password, 10);
 
     const userId = await insertGetId({
-      firstName,
-      lastName,
-      mobile,
-      password: encryptPassword,
-      isAdmin,
-      isActive,
+        firstName,
+        lastName,
+        mobile,
+        password: encryptPassword,
+        isAdmin,
+        isActive,
     });
 
     const createdUser = await getUser(userId);
 
     if (!createdUser) {
-      throw new ApiError(500, "Internal Server Error");
+        throw new ApiError(500, "Internal Server Error");
     }
 
-    console.log(cre);
     if (createdUser.isAdmin == 0) {
-      const employee = await createEmployee({
-        userId: createdUser.id,
-        firstName,
-        lastName,
-        mobile,
-        name: firstName + " " + lastName,
-      });
+        const employee = await createEmployee({
+            userId: createdUser.id,
+            firstName,
+            lastName,
+            mobile,
+            name: firstName + " " + lastName,
+        });
     }
 
     return res
-      .status(201)
-      .json(new ApiResponse(200, createdUser, "User registered successfully!"));
-  } catch (error) {
-    next(error);
-  }
+        .status(201)
+        .json(
+            new ApiResponse(
+                200, 
+                createdUser, 
+                "User registered successfully!"
+            )
+        );
+    
 });
 
 const login = asyncHandler(async (req, res, next) => {
-  try {
     const { mobile, password } = req.body;
 
     if (!(mobile || password)) {
@@ -68,32 +69,30 @@ const login = asyncHandler(async (req, res, next) => {
     const user = await findUser(mobile);
 
     if (!user) {
-      throw new ApiError(404, "User does not exist or invalid credentials");
+      throw new ApiError(402, "User does not exist or invalid credentials");
     }
+
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
-      throw new ApiError(404, "Wrong Password, Please input correct password.");
+      throw new ApiError(402, "Wrong Password, Please input correct password.");
     }
 
     if (user.isActive === 0) {
-      throw new ApiError(401, "You have been blocked by admin.");
+      throw new ApiError(402, "You have been blocked by admin.");
     }
 
     const token = await generateTokenService(user);
 
     return res.status(201).json(
-      new ApiResponse(
-        201,
-        {
-          token,
-        },
-        "User logged in successfully"
-      )
+        new ApiResponse(
+            201,
+            {
+                token,
+            },
+            "User logged in successfully"
+        )
     );
-  } catch (error) {
-    next(error);
-  }
 });
 
 export { addUser, login };

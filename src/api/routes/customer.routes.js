@@ -9,9 +9,7 @@ import { customerSchema } from "../validators/customer.validator.js";
 
 const router = express.Router();
 
-router
-  .route("/create-customer")
-  .post(verifyJwt, validate(customerSchema), createCustomer);
+router.route("/create-customer").post(verifyJwt, validate(customerSchema), createCustomer);
 
 router.route("/get-customers").post(verifyJwt, getCustomers);
 
