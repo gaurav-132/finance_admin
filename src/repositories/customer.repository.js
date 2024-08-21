@@ -5,9 +5,9 @@ const createCustomerService = async (customerObj) => {
 };
 
 const getCustomersService = async (filterObj) => {
-  const customers = await getCustomersDB(filterObj);
+  const { customers, total } = await getCustomersDB(filterObj);
 
-  return customers;
+  return { customers, total };
 };
 
 export { createCustomerService, getCustomersService };
