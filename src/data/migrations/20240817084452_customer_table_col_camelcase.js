@@ -3,18 +3,18 @@
  * @returns { Promise<void> }
  */
 export async function up (knex) {
-  return knex.schema.alterTable("customers", function (table) {
-    table.renameColumn("aadhaar", "aadhaarNumber");
-    table.renameColumn("pan", "panNumber");
-    table.renameColumn("cheque", "chequePhoto");
-    table.renameColumn("first_name", "firstName");
-    table.renameColumn("last_name", "lastName");
-    table.renameColumn("mobile", "mobileNumber");
-    table.renameColumn("permanent_address", "permanentAddress");
-    table.renameColumn("current_address", "currentAddress");
-    table.renameColumn("work_location", "workLocation");
-    table.renameColumn("added_by", "addedBy");
-  });
+    return knex.schema.alterTable("customers", function (table) {
+        table.renameColumn("aadhaar", "aadhaarNumber");
+        table.renameColumn("pan", "panNumber");
+        table.renameColumn("cheque", "chequePhoto");
+        table.renameColumn("first_name", "firstName");
+        table.renameColumn("last_name", "lastName");
+        table.renameColumn("mobile", "mobileNumber");
+        table.renameColumn("permanent_address", "permanentAddress");
+        table.renameColumn("current_address", "currentAddress");
+        table.renameColumn("work_location", "workLocation");
+        table.renameColumn("added_by", "addedBy");
+    });
 };
 
 /**

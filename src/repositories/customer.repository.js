@@ -1,7 +1,14 @@
-import { addCustomerDB, getCustomersDB } from "../models/customer.model.js";
+import { getLoanRequests } from "../api/controllers/customer.controller.js";
+import { 
+    addCustomerDB, 
+    getCustomersDB,
+    loanRequestDb, 
+    getLoanRequestDb,
+    dispatchActionDb,
+} from "../models/customer.model.js";
 
 const createCustomerService = async (customerObj) => {
-  await addCustomerDB(customerObj);
+    await addCustomerDB(customerObj);
 };
 
 const getCustomersService = async (filterObj) => {
@@ -10,4 +17,22 @@ const getCustomersService = async (filterObj) => {
   return { customers, total };
 };
 
-export { createCustomerService, getCustomersService };
+const loanRequestService = async(loanRequestObj) => {
+    await loanRequestDb(loanRequestObj);
+}
+
+const getLoanRequestsService = async(filterObj) => {
+    return await getLoanRequestDb(filterObj);
+}
+
+const dispatchActionService = async(actionObj) => {
+    await dispatchActionDb(actionObj);
+}
+
+export { 
+    createCustomerService, 
+    getCustomersService,
+    loanRequestService,
+    getLoanRequestsService,
+    dispatchActionService,
+};

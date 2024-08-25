@@ -20,34 +20,33 @@ const updateEmployeeSalary = async(empSalaryObj) => {
     }
 }
 
-const applyFilters = (query, filterObj) => {
+const applyFilters = async (query, filterObj) => {
     if (filterObj.allocatedLocationId) {
-        query.where('allocatedLocationId', filterObj.allocatedLocationId);
+        await query.where('allocatedLocationId', filterObj.allocatedLocationId);
     }
     
     if (filterObj.employeeName) {
-        query.where('name', 'like', `%${filterObj.employeeName}%`);
+        await query.where('name', 'like', `%${filterObj.employeeName}%`);
     }
 };
 
 const getEmployeesData = async (filterObj) => {
 
     const totalQuery = knex('employees').count('id as count');
-    applyFilters(totalQuery, filterObj);
+    await applyFilters(totalQuery, filterObj);
     const totalResult = await totalQuery.first();
     const total = totalResult.count; 
 
     
     let employeesQuery = knex('employees').select('*');
-    applyFilters(employeesQuery, filterObj);
+    await applyFilters(employeesQuery, filterObj);
 
     if (filterObj.limit) {
-        employeesQuery.limit(filterObj.limit);
+        await employeesQuery.limit(filterObj.limit);
     }
 
     if (filterObj.page && filterObj.limit) {
-        const offset = (filterObj.page - 1) * filterObj.limit;
-        employeesQuery.offset(offset);
+        employeesQuery.offset(filterObj.offset);
     }
 
     const employees = await employeesQuery;

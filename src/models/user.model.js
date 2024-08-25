@@ -62,8 +62,7 @@ const getUsersData = async (filterObj) => {
     }
 
     if (filterObj.page && filterObj.limit) {
-        const offset = (filterObj.page - 1) * filterObj.limit;
-        usersQuery.offset(offset);
+        usersQuery.offset(filterObj.offset);
     }
 
     const users = await usersQuery;

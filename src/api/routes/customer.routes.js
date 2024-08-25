@@ -3,10 +3,13 @@ import { validate } from "../middleware/validate.middleware.js";
 import { verifyJwt } from "../middleware/auth.middleware.js";
 
 import {
-  createCustomer,
-  loanReq,
-  getCustomers,
+    createCustomer,
+    loanRequest,
+    getCustomers,
+    getLoanRequests,
+    dispatchAction,
 } from "../controllers/customer.controller.js";
+
 import { customerSchema } from "../validators/customer.validator.js";
 
 const router = express.Router();
@@ -15,7 +18,9 @@ router
   .route("/create-customer")
   .post(verifyJwt, validate(customerSchema), createCustomer);
 
-router.route("/raise-loan-request").post(verifyJwt, validate(), loanReq);
+router.route("/raise-loan-request").post(verifyJwt, loanRequest);
+router.route("/get-loan-requests").post(verifyJwt, getLoanRequests);
+router.route("/dispatch-action").post(verifyJwt, dispatchAction);
 
 router.route("/get-customers").post(verifyJwt, getCustomers);
 
