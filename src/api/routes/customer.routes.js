@@ -17,6 +17,6 @@ router
 
 router.route("/raise-loan-request").post(verifyJwt, validate(), loanReq);
 
-// router.route("/get-customers").post(verifyJwt, getCustomers);
+router.route("/get-customers").post(verifyJwt, getCustomers);
 
 export { router as customerRoutes };
