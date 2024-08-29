@@ -68,11 +68,11 @@ const login = asyncHandler(async (req, res, next) => {
     }
 
     const user = await findUser(mobile);
+    console.log(user);
 
     if (!user) {
       throw new ApiError(402, "User does not exist or invalid credentials");
     }
-
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {

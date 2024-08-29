@@ -63,64 +63,38 @@ const loanRequest = asyncHandler(async (req, res) => {
 });
 
 const getCustomers = asyncHandler(async (req, res, next) => {
-<<<<<<< HEAD
-    try {
-        const { total, limit, page } = req.body;
 
-        const customers = await getCustomersService({
-            total,
-            limit,
-            page,
-        });
 
-        const data = {
-            customers,
-            total: 2,
-            page: 1,
-        };
+    let { limit, page } = req.body;
 
-        return res
-            .status(200)
-            .json(
-                new ApiResponse(
-                    200, 
-                    data, 
-                    "Customers Fetched Successfully"
-                )
-            );
-    } catch (error) {
-        next(error);
-    }
-=======
-  let { limit, page } = req.body;
+    const offset = (page - 1) * limit;
 
-  const offset = (page - 1) * limit;
+    const { customers, total } = await getCustomersService({
+        limit,
+        page,
+        offset,
+    });
 
-  const { customers, total } = await getCustomersService({
-    limit,
-    page,
-    offset,
-  });
+    const data = {
+        customers,
+        total,
+        page,
+        limit,
+    };
 
-  const data = {
-    customers,
-    total,
-    page,
-    limit,
-  };
-
-  return res
-    .status(200)
-    .json(new ApiResponse(200, data, "Customers Fetched Successfully"));
->>>>>>> 2545571b3148f871a51f75a9abf9204555ae2380
+    return res
+        .status(200)
+        .json(new ApiResponse(200, data, "Customers Fetched Successfully"));
 });
 
 const getLoanRequests =  asyncHandler(async(req, res) => {
-    const { page, limit, customerName} = req.body;
+    const { page, limit, customerName, loanStatus, locationId} = req.body;
 
     const offset = (page - 1) * limit;
-    
-    const { loanRequests, total } = await getLoanRequestsService({ limit, page, offset, customerName });
+
+    const filterObj = { page, limit, customerName, loanStatus, locationId};
+
+    const { loanRequests, total } = await getLoanRequestsService(filterObj);
 
     return res
         .status(201)
