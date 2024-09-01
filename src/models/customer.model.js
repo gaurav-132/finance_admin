@@ -7,25 +7,25 @@ const addCustomerDB = async (customerObj) => {
 const applyFilters = (query, filterObj) => {};
 
 const getCustomersDB = async (filterObj) => {
-  const totalQuery = knex("customers").count("id as count");
-  applyFilters(totalQuery, filterObj);
+    const totalQuery = knex("customers").count("id as count");
+    applyFilters(totalQuery, filterObj);
 
-  const totalResult = await totalQuery.first();
-  const total = totalResult.count;
+    const totalResult = await totalQuery.first();
+    const total = totalResult.count;
 
-  let customersQuery = knex("customers").select("*");
+    let customersQuery = knex("customers").select("*");
 
-  if (filterObj.limit) {
-    customersQuery.limit(filterObj.limit);
-  }
+    if (filterObj.limit) {
+        customersQuery.limit(filterObj.limit);
+    }
 
-  if (filterObj.offset) {
-    customersQuery.offset(filterObj.offset);
-  }
+    if (filterObj.page && filterObj.limit) {
+        customersQuery.offset(filterObj.offset);
+    }
 
-  const customers = await customersQuery;
+    const customers = await customersQuery;
 
-  return { customers, total };
+    return { customers, total };
 };
 
 const loanRequestDb = async (loanRequestObj) => {
@@ -40,6 +40,9 @@ const applyGetLoanRequestsFilter = (query, filterObj) => {
 };
 
 const getLoanRequestDb = async (filterObj) => {
+    console.log('Filter Object:', filterObj);
+
+    // Initialize queries
     let loanRequestsQuery = knex('loan_requests')
         .select(
             'loan_requests.*', 
@@ -52,41 +55,43 @@ const getLoanRequestDb = async (filterObj) => {
             'customers.occupation',
             'customers.permanentAddress',
             'customers.currentAddress',
-            'customers.workLocation',
             'employees.name as requestedThroughName'
         )
         .leftJoin('customers', 'customers.id', '=', 'loan_requests.customerId')
         .leftJoin('employees', 'employees.id', '=', 'loan_requests.requestedThrough')
-        .where('loan_requests.isApproved', 0);
+        .where('loan_requests.status', filterObj.loanStatus);
 
-    const totalQuery = knex('loan_requests').count('loan_requests.id as count')
+    const totalQuery = knex('loan_requests')
+        .count('loan_requests.id as count')
         .leftJoin('customers', 'customers.id', '=', 'loan_requests.customerId')
-        .where('loan_requests.isApproved', 0);
+        .where('loan_requests.status', filterObj.loanStatus);
 
+    // Apply filters
     applyGetLoanRequestsFilter(loanRequestsQuery, filterObj);
     applyGetLoanRequestsFilter(totalQuery, filterObj);
 
+    // Execute total query
     const totalResult = await totalQuery.first();
-    const total = totalResult.count;
+    const total = totalResult ? totalResult.count : 0; // Handle case where totalResult might be null
 
+    // Apply pagination and limit
     if (filterObj.limit) {
         loanRequestsQuery.limit(filterObj.limit);
     }
 
     if (filterObj.page && filterObj.limit) {
-        const offset = (filterObj.page - 1) * filterObj.limit;
-        loanRequestsQuery.offset(offset);
+        loanRequestsQuery.offset(filterObj.offset);
     }
 
+    // Execute loanRequestsQuery
     const loanRequests = await loanRequestsQuery;
 
-    const taxRate = 10; 
-
+    // Add tax calculations
+    const taxRate = 10;
     loanRequests.forEach((request) => {
         request.taxInPercentage = `${taxRate}%`;
         request.taxRate = parseFloat(taxRate.toFixed(2));
         const totalAmountAfterTax = request.loanAmount + (request.loanAmount * taxRate / 100);
-    
         request.totalAmountAfterTax = parseFloat(totalAmountAfterTax.toFixed(2));
     });
 
@@ -94,8 +99,8 @@ const getLoanRequestDb = async (filterObj) => {
 };
 
 
+
 const dispatchActionDb = async (actionObj) => {
-    console.log("Hello db")
     const currentDate = new Date();
 
     if(actionObj.action === 1){
@@ -113,17 +118,16 @@ const dispatchActionDb = async (actionObj) => {
         console.log('actionOb', actionObj);
 
         await knex('loan_requests').where('id', actionObj.id).update({
-            isApproved: actionObj.action,
+            status: actionObj.action,
             startDate: formattedStartDate,
             endDate: formattedEndDate,
             daysLeft,
-            isApproved: actionObj.action, 
             totalAmount: actionObj.totalAmount,
             interest: actionObj.tax,
         })
     }else if(actionObj.action === 2){
         await knex('loan_requests').where('id', actionObj.id).update({
-            isApproved: actionObj.action,
+            status: actionObj.action,
         })
     }
 }

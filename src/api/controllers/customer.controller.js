@@ -58,40 +58,36 @@ const loanRequest = asyncHandler(async (req, res) => {
 });
 
 const getCustomers = asyncHandler(async (req, res, next) => {
-  try {
-    const { total, limit, page } = req.body;
-
-    const customers = await getCustomersService({
-      total,
-      limit,
-      page,
-    });
-
-    const data = {
-      customers,
-      total: 2,
-      page: 1,
-    };
-
-    return res
-      .status(200)
-      .json(new ApiResponse(200, data, "Customers Fetched Successfully"));
-  } catch (error) {
-    next(error);
-  }
-});
-
-const getLoanRequests = asyncHandler(async (req, res) => {
-  const { page, limit, customerName } = req.body;
+  let { limit, page } = req.body;
 
   const offset = (page - 1) * limit;
 
-  const { loanRequests, total } = await getLoanRequestsService({
+  const { customers, total } = await getCustomersService({
     limit,
     page,
     offset,
-    customerName,
   });
+
+  const data = {
+    customers,
+    total,
+    page,
+    limit,
+  };
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, data, "Customers Fetched Successfully"));
+});
+
+const getLoanRequests = asyncHandler(async (req, res) => {
+  const { page, limit, customerName, loanStatus, locationId } = req.body;
+
+  const offset = (page - 1) * limit;
+
+  const filterObj = { page, limit, customerName, loanStatus, locationId };
+
+  const { loanRequests, total } = await getLoanRequestsService(filterObj);
 
   return res.status(201).json(
     new ApiResponse(201, {
