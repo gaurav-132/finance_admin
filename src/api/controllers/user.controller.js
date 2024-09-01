@@ -1,10 +1,10 @@
 import { asyncHandler } from "../../utils/asyncHandler.js";
 import { ApiError } from "../../utils/apiError.js";
 import {
-  findUser,
-  insertGetId,
-  getUser,
-  getUsersService,
+    findUser,
+    insertGetId,
+    getUser,
+    getUsersService,
 } from "../../repositories/user.repository.js";
 import bcrypt from "bcryptjs";
 import { ApiResponse } from "../../utils/apiResponse.js";

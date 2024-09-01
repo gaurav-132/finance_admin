@@ -29,7 +29,7 @@ const getCustomersDB = async (filterObj) => {
 };
 
 const loanRequestDb = async (loanRequestObj) => {
-    await knex("loan_requests").insert(loanRequestObj);
+    await knex("loans").insert(loanRequestObj);
 };
 
 
@@ -43,9 +43,9 @@ const getLoanRequestDb = async (filterObj) => {
     console.log('Filter Object:', filterObj);
 
     // Initialize queries
-    let loanRequestsQuery = knex('loan_requests')
+    let loanRequestsQuery = knex('loans')
         .select(
-            'loan_requests.*', 
+            'loans.*', 
             'customers.firstName', 
             'customers.lastName', 
             'customers.workLocation',
@@ -57,14 +57,14 @@ const getLoanRequestDb = async (filterObj) => {
             'customers.currentAddress',
             'employees.name as requestedThroughName'
         )
-        .leftJoin('customers', 'customers.id', '=', 'loan_requests.customerId')
-        .leftJoin('employees', 'employees.id', '=', 'loan_requests.requestedThrough')
-        .where('loan_requests.status', filterObj.loanStatus);
+        .leftJoin('customers', 'customers.id', '=', 'loans.customerId')
+        .leftJoin('employees', 'employees.id', '=', 'loans.requestedThrough')
+        .where('loans.status', filterObj.loanStatus);
 
-    const totalQuery = knex('loan_requests')
-        .count('loan_requests.id as count')
-        .leftJoin('customers', 'customers.id', '=', 'loan_requests.customerId')
-        .where('loan_requests.status', filterObj.loanStatus);
+    const totalQuery = knex('loans')
+        .count('loans.id as count')
+        .leftJoin('customers', 'customers.id', '=', 'loans.customerId')
+        .where('loans.status', filterObj.loanStatus);
 
     // Apply filters
     applyGetLoanRequestsFilter(loanRequestsQuery, filterObj);
@@ -117,7 +117,7 @@ const dispatchActionDb = async (actionObj) => {
 
         console.log('actionOb', actionObj);
 
-        await knex('loan_requests').where('id', actionObj.id).update({
+        await knex('loans').where('id', actionObj.id).update({
             status: actionObj.action,
             startDate: formattedStartDate,
             endDate: formattedEndDate,
@@ -126,11 +126,30 @@ const dispatchActionDb = async (actionObj) => {
             interest: actionObj.tax,
         })
     }else if(actionObj.action === 2){
-        await knex('loan_requests').where('id', actionObj.id).update({
+        await knex('loans').where('id', actionObj.id).update({
             status: actionObj.action,
         })
     }
 }
+
+
+const saveDailyCollectionDb = async (formData) => {
+    const [collectionId] = await knex('daily_collections').insert(formData);
+    return collectionId;
+};
+
+
+const checkValidCustomerDb = async(customerId) => {
+    const customer = await knex('customers').where('id',customerId).first();
+    return customer;
+}
+
+const checkValidLoanDb = async(loanId) => {
+    const loan = await knex('loans').where('id',loanId).first();
+    return loan;
+}
+
+
 
 export { 
     addCustomerDB, 
@@ -138,4 +157,7 @@ export {
     loanRequestDb,
     getLoanRequestDb,
     dispatchActionDb,
+    saveDailyCollectionDb,
+    checkValidCustomerDb,
+    checkValidLoanDb,
 };

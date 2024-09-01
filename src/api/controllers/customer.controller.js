@@ -4,9 +4,17 @@ import {
     loanRequestService,
     getLoanRequestsService,
     dispatchActionService,
+    saveDailyCollectionService,
+    checkValidCustomerService,
+    checkValidLoanService,
 } from "../../repositories/customer.repository.js";
+import {
+    adjustLoanBalanceService,
+} from "../../repositories/loan.repository.js";
 import { asyncHandler } from "../../utils/asyncHandler.js";
 import { ApiResponse } from "../../utils/apiResponse.js";
+import moment from 'moment-timezone';
+
 
 const createCustomer = asyncHandler(async (req, res, next) => {
     console.log(req);
@@ -139,10 +147,56 @@ const dispatchAction = asyncHandler(async(req,res) => {
         );
 });
 
+
+const addDailyCollection = asyncHandler(async(req,res, next) => {
+    const { customerId, loanId, date, amount, paymentMode } = req.body;
+    const user = req.user;
+
+    const formData = {
+        customerId, 
+        loanId, 
+        date: moment(date).format("YYYY-MM-DD"), 
+        amount, 
+        paymentMode,
+        collectedBy: user.id,
+    };
+
+
+    const checkCustomer = checkValidCustomerService(customerId);
+
+    if(!checkCustomer){
+        throw new ApiError(404, "Please select a valid customer");
+    }
+
+    const checkLoan = checkValidLoanService(loanId);
+
+    if(!checkLoan){
+        throw new ApiError(404, "Process this activity for a valid loan");
+    }
+
+    const collectionId = await saveDailyCollectionService(formData);
+
+    if(collectionId){
+        await adjustLoanBalanceService(collectionId);
+    }
+
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(
+                200,
+                {
+                    message: "Daily collection added successfully!"
+                }
+            )
+        )
+})
+
 export { 
     createCustomer, 
     loanRequest, 
     getCustomers,
     getLoanRequests, 
     dispatchAction,
+    addDailyCollection,
 };
