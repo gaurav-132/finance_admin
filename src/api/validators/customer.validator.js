@@ -79,4 +79,35 @@ const customerSchema = z.object({
         .min(1, { message: "Added by cannot be empty." }),
 });
 
-export { customerSchema };
+
+const collectionSchema = z.object({
+    customerId: z.number({
+            required_error: "Please add collection through a valid customer",
+        }),
+    
+    loanId: z.number({
+            required_error: "Please process this activity for a valid loan",
+        }),
+    
+    amount: z.number({
+            required_error: "Amount cannot be empty",
+        }).min(0, "Amount must be a positive number"),
+    
+    date: z .string({
+            required_error: "Date cannot be empty",
+        })
+        .transform(dateStr => {
+            const parsedDate = new Date(dateStr);
+            if (isNaN(parsedDate.getTime())) {
+                throw new Error("Invalid date format");
+            }
+            return parsedDate;
+        }),
+    
+    paymentMode: z.number({
+            required_error: "Payment Mode cannot be empty",
+        }).int().min(0, "Payment Mode must be a valid integer"),
+});
+
+
+export { customerSchema, collectionSchema };

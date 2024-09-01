@@ -5,6 +5,9 @@ import {
     loanRequestDb, 
     getLoanRequestDb,
     dispatchActionDb,
+    saveDailyCollectionDb,
+    checkValidCustomerDb,
+    checkValidLoanDb,
 } from "../models/customer.model.js";
 
 const createCustomerService = async (customerObj) => {
@@ -29,10 +32,26 @@ const dispatchActionService = async(actionObj) => {
     await dispatchActionDb(actionObj);
 }
 
+const saveDailyCollectionService = async(formData) => {
+    return await saveDailyCollectionDb(formData);
+}
+
+const checkValidCustomerService = async(customerId) => {
+    await checkValidCustomerDb(customerId);
+}
+
+const checkValidLoanService = async(loanId) => {
+    await checkValidLoanDb(loanId);
+}
+
+
 export { 
     createCustomerService, 
     getCustomersService,
     loanRequestService,
     getLoanRequestsService,
     dispatchActionService,
+    saveDailyCollectionService,
+    checkValidCustomerService,
+    checkValidLoanService,
 };
