@@ -5,11 +5,7 @@ import { ApiError } from "../utils/apiError.js";
 
 const getActiveLoansDb = async () => {
     const loans = await knex('loans').where('status',1).select('*');
-    return loans.map(loan => ({
-        ...loan,
-        startDate: new Date(loan.startDate),
-        endDate: new Date(loan.endDate)
-    }));
+    return loans;
 }   
 
 const fixLoanDb = async (loanId) => {
