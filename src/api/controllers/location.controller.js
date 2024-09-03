@@ -7,9 +7,9 @@ import {
 } from "../../repositories/location.repository.js";
 
 const createLocation = asyncHandler(async (req, res, next) => {
-  const { locationName } = req.body;
+  const { id, locationName } = req.body;
 
-  await addLocationService({ locationName });
+  await addLocationService({ id, locationName });
 
   return res
     .status(201)

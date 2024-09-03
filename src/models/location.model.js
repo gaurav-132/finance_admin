@@ -1,7 +1,16 @@
 import knex from "../config/db.js";
 
 const addLocationDB = async (locationObj) => {
-    await knex("locations").insert(locationObj);
+  const { id, ...data } = locationObj;
+  const existingEntry = await knex("locations").where({ id }).first();
+
+  if (existingEntry) {
+    // Update the existing entry
+    await knex("locations").where({ id }).update(data);
+  } else {
+    // Insert a new entry
+    await knex("locations").insert(data);
+  }
 };
 
 const applyFilters = (query, filterObj) => {};
