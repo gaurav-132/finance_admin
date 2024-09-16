@@ -102,10 +102,25 @@ const adjustLoanBalanceDb = async (collectionId) => {
     }
 }
 
+const getNewLoansTodayDb = async () => {
+    const currentDate = new Date();
+    const today = new Date(currentDate);
+    today.setDate(currentDate.getDate() + 1);
+
+    const formattedToday = today.toISOString().split('T')[0];
+
+   
+    
+    
+    return await knex("loans")
+        .where('startDate', '>=', formattedToday)
+        .andWhere('status', 1);  
+};
 
 export {
     getActiveLoansDb,
     fixLoanDb,
     updateDaysLeftDb,
     adjustLoanBalanceDb,
+    getNewLoansTodayDb
 }

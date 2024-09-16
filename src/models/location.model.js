@@ -37,4 +37,14 @@ const getLocationsDB = async (filterObj) => {
     return { locations, total };
 };
 
-export { addLocationDB, getLocationsDB };
+const getTopLocationsDB = async (limit = 3) => {
+    const topLocations = await knex("locations")
+        .select("locationName")
+        .count("id as loanCount")
+        .groupBy("locationName")
+        .orderBy("loanCount", "desc")
+        .limit(limit);  
+
+    return topLocations;
+};
+export { addLocationDB, getLocationsDB , getTopLocationsDB};

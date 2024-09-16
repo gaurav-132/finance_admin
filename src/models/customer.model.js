@@ -1,3 +1,4 @@
+import moment from "moment-timezone";
 import knex from "../config/db.js";
 
 const addCustomerDB = async (customerObj) => {
@@ -149,7 +150,18 @@ const checkValidLoanDb = async(loanId) => {
     return loan;
 }
 
+const getCollectionTodayDb = async () => {
+    const currentDate = new Date();
+    const today = new Date(currentDate);
+    today.setDate(currentDate.getDate() + 1);
 
+    const formattedToday = today.toISOString().split('T')[0];
+
+    
+    
+    return await knex("daily_collections")
+        .where('date', '>=', formattedToday);  // Assuming 'date' is the field for collection date
+};
 
 export { 
     addCustomerDB, 
@@ -160,4 +172,5 @@ export {
     saveDailyCollectionDb,
     checkValidCustomerDb,
     checkValidLoanDb,
+    getCollectionTodayDb
 };

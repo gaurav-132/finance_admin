@@ -3,6 +3,7 @@ import {
     fixLoanDb,
     updateDaysLeftDb,
     adjustLoanBalanceDb,
+    getNewLoansTodayDb,
 } from '../models/loan.model.js'
 
 
@@ -22,9 +23,15 @@ const adjustLoanBalanceService = async (collectionId) => {
     await adjustLoanBalanceDb(collectionId);
 }
 
+const getNewLoansTodayService = async () => {
+    return await getNewLoansTodayDb();
+  };
+  
+
 export {
     getActiveLoansService,
     fixLoanService,
     updateDaysLeftService,
     adjustLoanBalanceService,
+    getNewLoansTodayService
 }

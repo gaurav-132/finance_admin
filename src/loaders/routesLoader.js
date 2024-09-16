@@ -3,7 +3,7 @@ import { employeeRoutes } from "../api/routes/employee.routes.js";
 import { userRoutes } from "../api/routes/user.routes.js";
 import { customerRoutes } from "../api/routes/customer.routes.js";
 import { locationRoutes } from "../api/routes/location.routes.js";
-import { pdfRoutes } from "../api/routes/pdf.routes.js";
+import { dashboardRoutes } from "../api/routes/dashboard.routes.js";
 
 const routesLoader = (app) => {
   app.use("/api/v1/users", userRoutes);
@@ -11,7 +11,7 @@ const routesLoader = (app) => {
   app.use("/api/v1/auth", authRoutes);
   app.use("/api/v1/customers", customerRoutes);
   app.use("/api/v1/locations", locationRoutes);
-  app.use("/api/v1/generatepdf", pdfRoutes);
+  app.use("/api/v1/dashboard", dashboardRoutes);
 };
 
 export default routesLoader;
