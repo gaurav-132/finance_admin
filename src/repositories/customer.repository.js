@@ -9,6 +9,7 @@ import {
     checkValidCustomerDb,
     checkValidLoanDb,
     getCollectionTodayDb,
+    getCustomerDetailsDb,
 } from "../models/customer.model.js";
 
 const createCustomerService = async (customerObj) => {
@@ -49,6 +50,10 @@ const getCollectionTodayService = async () => {
     return await getCollectionTodayDb();
 };
 
+const getCustomerDetailsService = async (customerId) => {
+    return await getCustomerDetailsDb(customerId);
+};
+
 export { 
     createCustomerService, 
     getCustomersService,
@@ -58,5 +63,6 @@ export {
     saveDailyCollectionService,
     checkValidCustomerService,
     checkValidLoanService,
-    getCollectionTodayService
+    getCollectionTodayService,
+    getCustomerDetailsService
 };

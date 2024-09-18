@@ -163,6 +163,35 @@ const getCollectionTodayDb = async () => {
         .where('date', '>=', formattedToday);  // Assuming 'date' is the field for collection date
 };
 
+const getCustomerDetailsDb = async (customerId) => {
+    const customer = await knex("customers")
+        .select(
+            "id", 
+            "firstName", 
+            "lastName", 
+            "mobileNumber", 
+            "aadhaarNumber", 
+            "panNumber", 
+            "permanentAddress", 
+            "currentAddress",  
+            "occupation", 
+            "workLocation",
+            "created_at"
+        )
+        .where({ id: customerId })
+        .first();
+
+    if (!customer) {
+        throw new Error('Customer not found');
+    }
+
+    const loanDetails = await knex("loans")
+        .select("id", "loanAmount", "amountPaid", "status", "endDate")
+        .where({ customerId });
+
+    return { ...customer, loanDetails };
+};
+
 export { 
     addCustomerDB, 
     getCustomersDB,
@@ -172,5 +201,6 @@ export {
     saveDailyCollectionDb,
     checkValidCustomerDb,
     checkValidLoanDb,
-    getCollectionTodayDb
+    getCollectionTodayDb,
+    getCustomerDetailsDb
 };

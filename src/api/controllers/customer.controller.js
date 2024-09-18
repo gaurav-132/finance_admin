@@ -7,6 +7,7 @@ import {
   saveDailyCollectionService,
   checkValidCustomerService,
   checkValidLoanService,
+  getCustomerDetailsService,
 } from "../../repositories/customer.repository.js";
 import { adjustLoanBalanceService } from "../../repositories/loan.repository.js";
 import { asyncHandler } from "../../utils/asyncHandler.js";
@@ -163,6 +164,14 @@ const addDailyCollection = asyncHandler(async (req, res, next) => {
   );
 });
 
+const getCustomerDetailsController = asyncHandler(async (req, res) => {
+  const { customerId } = req.params;
+
+  const customerData = await getCustomerDetailsService(customerId);
+
+  return res.status(200).json(new ApiResponse(200, customerData, "Customer details fetched successfully"));
+});
+
 export {
   createCustomer,
   loanRequest,
@@ -170,4 +179,5 @@ export {
   getLoanRequests,
   dispatchAction,
   addDailyCollection,
+  getCustomerDetailsController
 };

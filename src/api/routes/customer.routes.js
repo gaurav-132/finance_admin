@@ -9,6 +9,7 @@ import {
     getLoanRequests,
     dispatchAction,
     addDailyCollection,
+    getCustomerDetailsController,
 } from "../controllers/customer.controller.js";
 
 import { customerSchema, collectionSchema } from "../validators/customer.validator.js";
@@ -24,6 +25,7 @@ router.route("/get-loan-requests").post(verifyJwt, getLoanRequests);
 router.route("/dispatch-action").post(verifyJwt, dispatchAction);
 
 router.route("/get-customers").post(verifyJwt, getCustomers);
+router.route("/get-customer/:customerId").post(verifyJwt,getCustomerDetailsController);
 router.route("/add-daily-collection").post(verifyJwt, validate(collectionSchema) , addDailyCollection);
 
 export { router as customerRoutes };
