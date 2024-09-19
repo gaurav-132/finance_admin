@@ -117,10 +117,47 @@ const getNewLoansTodayDb = async () => {
         .andWhere('status', 1);  
 };
 
+const getLoanDetailsDb = async (loanId) => {
+    const loan = await knex("loans")
+        .select(
+            "loans.id",
+            "loans.customerId",
+            "loans.loanAmount",
+            "loans.amountPaid",
+            "loans.totalAmount",
+            "loans.startDate",
+            "loans.endDate",
+            "loans.daysLeft",
+            "loans.status",
+            "customers.aadhaarNumber",
+            "customers.panNumber",
+            "customers.firstName",
+            "customers.lastName",
+            "customers.mobileNumber",
+            "customers.addedBy"
+
+        )
+        .leftJoin("customers","loans.customerId","customers.id")
+        .where("loans.id",loanId)
+        .first();
+
+    if (!loan) {
+        throw new Error("Loan not found");
+    }
+
+    const transactionLogs = await knex("daily_collections")
+        .select("id", "date", "amount", "paymentMode","collectedBy")
+        .where("loanId", loanId );
+
+    return { ...loan, transactionLogs };
+};
+
+
 export {
     getActiveLoansDb,
     fixLoanDb,
     updateDaysLeftDb,
     adjustLoanBalanceDb,
-    getNewLoansTodayDb
+    getNewLoansTodayDb,
+    getLoanDetailsDb
 }
