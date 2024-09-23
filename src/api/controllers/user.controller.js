@@ -5,6 +5,7 @@ import {
     insertGetId,
     getUser,
     getUsersService,
+    deleteUserService,
 } from "../../repositories/user.repository.js";
 import bcrypt from "bcryptjs";
 import { ApiResponse } from "../../utils/apiResponse.js";
@@ -120,4 +121,20 @@ const getUsers = asyncHandler(async(req,res) => {
 
 })
 
-export { addUser, login, getUsers };
+const deleteUserController = asyncHandler(async (req, res) => {
+    const { userId } = req.params;
+
+    const user = await getUser(userId);
+
+    if (!user) {
+        throw new ApiError(404, "User not found");
+    }
+
+    await deleteUserService(userId);
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, {}, "User deleted successfully"));
+});
+
+export { addUser, login, getUsers, deleteUserController };

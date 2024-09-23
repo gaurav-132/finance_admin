@@ -17,9 +17,7 @@ import { customerSchema, collectionSchema } from "../validators/customer.validat
 
 const router = express.Router();
 
-router
-  .route("/create-customer")
-  .post(verifyJwt, validate(customerSchema), createCustomer);
+router.route("/create-customer").post( verifyJwt, validate(customerSchema),createCustomer);
 
 router.route("/raise-loan-request").post(verifyJwt, loanRequest);
 router.route("/get-loan-requests").post(verifyJwt, getLoanRequests);

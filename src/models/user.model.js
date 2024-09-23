@@ -70,9 +70,16 @@ const getUsersData = async (filterObj) => {
     return { users, total };
 };
 
+const deleteUser = async (userId) => {
+    await knex('users').where({ id: userId }).del();
+};
+
+
+
 export { 
     findUserById, 
     findUserByMobile ,
     insertAndGetId,
     getUsersData,
+    deleteUser
 };

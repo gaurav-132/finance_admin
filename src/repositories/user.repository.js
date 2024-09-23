@@ -1,4 +1,4 @@
-import { findUserById, findUserByMobile, getUsersData, insertAndGetId } from "../models/user.model.js";
+import { deleteUser, findUserById, findUserByMobile, getUsersData, insertAndGetId } from "../models/user.model.js";
 import bycrypt from 'bcryptjs'
 
 const getUser = async (id) => {
@@ -17,12 +17,16 @@ const insertGetId = async (userObj) => {
 
 const getUsersService = async(filterObj) => {
     return await getUsersData(filterObj);
-}
+};
 
+const deleteUserService = async (userId) => {
+    return await deleteUser(userId);
+};
 
 export {
     getUser,
     findUser,
     insertGetId,
     getUsersService,
+    deleteUserService
 }
