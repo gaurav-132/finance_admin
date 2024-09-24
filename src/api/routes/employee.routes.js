@@ -3,7 +3,7 @@ import { validate } from '../middleware/validate.middleware.js';
 import { verifyJwt } from '../middleware/auth.middleware.js';
 import { employeeDetailsSchema, employeeMonthlySalarySchema,  } from '../validators/employee.validator.js';
 import { upload } from '../middleware/multer.middleware.js';
-import { updateEmp, updateMonthlySalary , getEmployees} from '../controllers/employee.controller.js';
+import { updateEmp, updateMonthlySalary , getEmployees, getGroupedCollections} from '../controllers/employee.controller.js';
 
 
 const router = express.Router();
@@ -32,5 +32,6 @@ router.route('/update-details').post(verifyJwt,
 router.route('/update-monthly-salary').post(verifyJwt, validate(employeeMonthlySalarySchema),updateMonthlySalary);
 
 router.route('/get-employees').post(verifyJwt,getEmployees);
+router.route("/daily-collection/grouped").get(getGroupedCollections);
 
 export { router as employeeRoutes};

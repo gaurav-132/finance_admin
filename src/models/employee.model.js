@@ -55,6 +55,10 @@ const getEmployeesData = async (filterObj) => {
 };
 
 
+const getGroupedCollectionsDb = async () => {
+    // aggregation logic
+};
+
 
 export {
     addEmployee,
@@ -62,4 +66,5 @@ export {
     findEmployeeById,
     updateEmployeeSalary,
     getEmployeesData,
+    getGroupedCollectionsDb
 }

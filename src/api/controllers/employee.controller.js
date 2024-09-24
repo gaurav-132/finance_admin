@@ -6,6 +6,7 @@ import {
   updateEmpSalaryService,
   updateEmpService,
   getEmployeesService,
+  getGroupedCollectionsService,
 } from "../../repositories/employee.repository.js";
 import { uploadOnCloudinary } from "../../utils/cloudinary.js";
 
@@ -125,5 +126,15 @@ const getEmployees = asyncHandler(async (req, res, next) => {
     )
   );
 });
+
+
+export const getGroupedCollections = async (req, res) => {
+  try {
+      const groupedCollections = await getGroupedCollectionsService();
+      res.status(200).json({ success: true, groupedCollections });
+  } catch (error) {
+      res.status(500).json({ success: false, message: error.message });
+  }
+};
 
 export { updateEmp, updateMonthlySalary, getEmployees };
