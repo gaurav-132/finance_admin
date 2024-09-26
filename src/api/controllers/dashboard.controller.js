@@ -42,6 +42,9 @@ const getDashboardData = asyncHandler(async (req, res) => {
     }, "Data fetched successfully"));
 });
 
+
+
 export {
-    getDashboardData
+    getDashboardData,
+    
 };

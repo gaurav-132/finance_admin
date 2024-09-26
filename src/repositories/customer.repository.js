@@ -10,6 +10,7 @@ import {
     checkValidLoanDb,
     getCollectionTodayDb,
     getCustomerDetailsDb,
+    getTransactionsDB,
 } from "../models/customer.model.js";
 
 const createCustomerService = async (customerObj) => {
@@ -54,6 +55,26 @@ const getCustomerDetailsService = async (customerId) => {
     return await getCustomerDetailsDb(customerId);
 };
 
+const getTransactionsService = async ({ limit, page, offset, name, location, date }) => {
+    // Create a filter object to pass to the DB function
+    const filterObj = {
+      limit,
+      page,
+      offset,
+      name,
+      location,
+      date,
+    };
+  
+    const { transactions, total } = await getTransactionsDB(filterObj);
+  
+    return {
+      transactions,
+      total,
+    };
+  };
+
+
 export { 
     createCustomerService, 
     getCustomersService,
@@ -64,5 +85,6 @@ export {
     checkValidCustomerService,
     checkValidLoanService,
     getCollectionTodayService,
-    getCustomerDetailsService
+    getCustomerDetailsService,
+    getTransactionsService
 };

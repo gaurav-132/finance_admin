@@ -4,28 +4,36 @@ import knex from "../config/db.js";
 const addCustomerDB = async (customerObj) => {
     await knex("customers").insert(customerObj);
 };
-
-const applyFilters = (query, filterObj) => {};
+const applyFilters = (query, filterObj) => {
+    if (filterObj.customerName) {
+        query.where('firstName', 'like', `%${filterObj.customerName}%`)
+             .orWhere('lastName', 'like', `%${filterObj.customerName}%`);
+    }
+    if (filterObj.allocatedLocationId) {
+        query.where('allocated_location_id', filterObj.allocatedLocationId);
+    }
+};
 
 const getCustomersDB = async (filterObj) => {
-    const totalQuery = knex("customers").count("id as count");
-    applyFilters(totalQuery, filterObj);
+    const { limit, page } = filterObj;
+    const offset = (page - 1) * limit;
 
+    const totalQuery = knex('customers').count('id as count');
+    applyFilters(totalQuery, filterObj);
     const totalResult = await totalQuery.first();
     const total = totalResult.count;
 
-    let customersQuery = knex("customers").select("*");
+    let customersQuery = knex('customers').select('*');
+    applyFilters(customersQuery, filterObj);
 
-    if (filterObj.limit) {
-        customersQuery.limit(filterObj.limit);
+    if (limit) {
+        customersQuery.limit(limit);
     }
-
-    if (filterObj.page && filterObj.limit) {
-        customersQuery.offset(filterObj.offset);
+    if (offset) {
+        customersQuery.offset(offset);
     }
 
     const customers = await customersQuery;
-
     return { customers, total };
 };
 
@@ -192,6 +200,33 @@ const getCustomerDetailsDb = async (customerId) => {
     return { ...customer, loanDetails };
 };
 
+const getTransactionsDB = async (filterObj) => {
+
+    const totalQuery = knex("daily_collections").count("id as count");
+    applyFilters(totalQuery, filterObj);
+  
+    const totalResult = await totalQuery.first();
+    const total = totalResult.count;
+  
+
+    let transactionsQuery = knex("daily_collections").select("*");
+    applyFilters(transactionsQuery, filterObj);
+  
+    if (filterObj.limit) {
+      transactionsQuery.limit(filterObj.limit);
+    }
+  
+    if (filterObj.page && filterObj.limit) {
+      transactionsQuery.offset(filterObj.offset);
+    }
+  
+    const transactions = await transactionsQuery;
+  
+    return { transactions, total };
+  };
+
+
+
 export { 
     addCustomerDB, 
     getCustomersDB,
@@ -202,5 +237,6 @@ export {
     checkValidCustomerDb,
     checkValidLoanDb,
     getCollectionTodayDb,
-    getCustomerDetailsDb
+    getCustomerDetailsDb,
+    getTransactionsDB
 };

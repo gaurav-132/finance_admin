@@ -7,6 +7,7 @@ import {
   updateEmpService,
   getEmployeesService,
   getGroupedCollectionsService,
+  getEmployeeDetailsService,
 } from "../../repositories/employee.repository.js";
 import { uploadOnCloudinary } from "../../utils/cloudinary.js";
 
@@ -137,4 +138,12 @@ export const getGroupedCollections = async (req, res) => {
   }
 };
 
-export { updateEmp, updateMonthlySalary, getEmployees };
+const getEmployeeDetailsController = asyncHandler(async (req, res) => {
+  const { employeeId } = req.params;
+
+  const employeeData = await getEmployeeDetailsService(employeeId);
+
+  return res.status(200).json(new ApiResponse(200, employeeData, "Employee details fetched successfully"));
+});
+
+export { updateEmp, updateMonthlySalary, getEmployees , getEmployeeDetailsController};

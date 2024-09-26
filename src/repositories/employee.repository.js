@@ -1,4 +1,4 @@
-import { addEmployee, findEmployeeById, getEmployeesData, getGroupedCollectionsDb, updateEmployee, updateEmployeeSalary } from "../models/employee.model.js";
+import { addEmployee, findEmployeeById, getEmployeeDetailsDb, getEmployeesData, getGroupedCollectionsDb, updateEmployee, updateEmployeeSalary } from "../models/employee.model.js";
 
 const createEmployee = async(empObj) => {
     await addEmployee(empObj);
@@ -24,6 +24,9 @@ const getGroupedCollectionsService = async () => {
     return await getGroupedCollectionsDb();
 };
 
+const getEmployeeDetailsService = async (employeeId) => {
+    return await getEmployeeDetailsDb(employeeId);
+};
 
 export {
     createEmployee,
@@ -31,5 +34,6 @@ export {
     findEmpByIdService,
     updateEmpSalaryService,
     getEmployeesService,
-    getGroupedCollectionsService
+    getGroupedCollectionsService,
+    getEmployeeDetailsService
 }

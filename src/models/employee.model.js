@@ -59,6 +59,52 @@ const getGroupedCollectionsDb = async () => {
     // aggregation logic
 };
 
+const getEmployeeDetailsDb = async (employeeId) => {
+    // Fetch employee details
+    const employee = await knex("employees")
+        .select(
+            "id",
+            "firstName",
+            "lastName",
+            "mobile",
+            "created_at"
+        )
+        .where({ id: employeeId })
+        .first();
+
+    if (!employee) {
+        throw new Error('Employee not found');
+    }
+
+    // Fetch loan details associated with the employee
+    const loanDetails = await knex("loans")
+        .select("id", "loanAmount", "amountPaid", "status", "endDate")
+        .where({ id:employeeId });
+
+    // Fetch salary details from the salary table
+    const salaryDetails = await knex("employees_monthly_salary")
+        .select(
+            "id",
+            "empId",
+            "month",
+            "year",
+            "paid",
+            "paidAmount",
+            "advanceAmountTaken",
+            "totalMonthlyExpense",
+            "created_at",
+            "updated_at"
+        )
+        .where({ empId: employeeId });
+
+    // Return the combined employee, loan, and salary details
+    return { 
+        ...employee, 
+        loanDetails,
+        salaryDetails
+    };
+};
+
 
 export {
     addEmployee,
@@ -66,5 +112,6 @@ export {
     findEmployeeById,
     updateEmployeeSalary,
     getEmployeesData,
-    getGroupedCollectionsDb
+    getGroupedCollectionsDb,
+    getEmployeeDetailsDb
 }

@@ -8,6 +8,7 @@ import {
   checkValidCustomerService,
   checkValidLoanService,
   getCustomerDetailsService,
+  getTransactionsService,
 } from "../../repositories/customer.repository.js";
 import { adjustLoanBalanceService, getLoanDetailsService } from "../../repositories/loan.repository.js";
 import { asyncHandler } from "../../utils/asyncHandler.js";
@@ -64,7 +65,7 @@ const loanRequest = asyncHandler(async (req, res) => {
 });
 
 const getCustomers = asyncHandler(async (req, res, next) => {
-  let { limit, page } = req.body;
+  let { limit, page, allocatedLocationId, customerName } = req.body;
 
   const offset = (page - 1) * limit;
 
@@ -72,6 +73,8 @@ const getCustomers = asyncHandler(async (req, res, next) => {
     limit,
     page,
     offset,
+    allocatedLocationId,
+    customerName,
   });
 
   const data = {
@@ -175,11 +178,40 @@ const getCustomerDetailsController = asyncHandler(async (req, res) => {
 const getLoanDetailsController = asyncHandler(async (req, res) => {
   const { loanId } = req.params;
 
-  // Fetch loan details using the service
   const loanDetails = await getLoanDetailsService(loanId);
 
-  // Send response
   return res.status(200).json(new ApiResponse(200, loanDetails, "Loan details fetched successfully"));
+});
+
+const getTransactions = asyncHandler(async (req, res, next) => {
+  let { limit, page, name, location, date } = req.body;
+
+  limit = limit || 10;
+  page = page || 1;
+
+  const offset = (page - 1) * limit;
+
+  const filterObj = {
+    limit,
+    page,
+    offset,
+    name,
+    location,
+    date,
+  };
+
+  const { transactions, total } = await getTransactionsService(filterObj);
+
+  const data = {
+    transactions,
+    total,
+    page,
+    limit,
+  };
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, data, "Transactions Fetched Successfully"));
 });
 
 
@@ -191,5 +223,6 @@ export {
   dispatchAction,
   addDailyCollection,
   getCustomerDetailsController,
-  getLoanDetailsController
+  getLoanDetailsController,
+  getTransactions
 };
